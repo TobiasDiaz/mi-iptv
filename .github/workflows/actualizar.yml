@@ -2,63 +2,28 @@ name: Actualizar Lista IPTV TecnoTV
 
 on:
   schedule:
-    # Se ejecuta automáticamente todos los días a las 6:00 AM UTC
     - cron: '0 6 * * *'
-  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub cuando quieras
+  workflow_dispatch:
 
 jobs:
   update-list:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del repositorio
+      - name: Descargar repositorio
         uses: actions/checkout@v3
 
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.10'
 
-      - name: Instalar librerías necesarias
+      - name: Instalar librerias
         run: |
           python -m pip install --upgrade pip
           pip install requests pygithub
 
-      - name: Ejecutar Script de Actualización
+      - name: Ejecutar Script de Actualizacion
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
           REPO_NAME: ${{ github.repository }}
-        run: |
-          python -c "
-          import os, re, requests
-          from github import Github
-
-          token = os.environ['GH_TOKEN']
-          repo_name = os.environ['REPO_NAME']
-          spinoff_url = 'https://spinoff.link/listas-iptv-actualizadas-2025/'
-
-          headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-          res = requests.get(spinoff_url, headers=headers)
-          match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', res.text)
-
-          if not match:
-              print('No se encontraron las 4 letras en spinoff.link')
-              exit(1)
-
-          nuevo_codigo = match.group(1)
-          print(f'Codigo actual en la web: {nuevo_codigo}')
-
-          g = Github(token)
-          repo = g.get_repo(repo_name)
-          file_content = repo.get_contents('lista.m3u')
-          contenido_viejo = file_content.decoded_content.decode('utf-8')
-
-          match_actual = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', contenido_viejo)
-          if match_actual:
-              codigo_viejo = match_actual.group(1)
-              if codigo_viejo != nuevo_codigo:
-                  contenido_nuevo = contenido_viejo.replace(f'tecnotv.club/{codigo_viejo}/', f'tecnotv.club/{nuevo_codigo}/')
-                  repo.update_file(file_content.path, f'Auto-update: {nuevo_codigo}', contenido_nuevo, file_content.sha)
-                  print('Lista M3U actualizada con exito en GitHub.')
-              else:
-                  print('El codigo ya estaba actualizado.')
-          "
+        run: python script.py
