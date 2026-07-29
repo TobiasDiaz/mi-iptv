@@ -12,15 +12,10 @@ headers = {
     'Accept': 'text/html,application/json,text/plain,*/*'
 }
 
-# Parser nativo de HTML para extraer texto y enlaces sin librerías externas
 class SimpleHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.text = []
         self.links = []
-
-    def handle_data(self, data):
-        self.text.append(data)
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
@@ -30,71 +25,80 @@ class SimpleHTMLParser(HTMLParser):
 
 nuevo_codigo = None
 
-print("=== 1. CONSULTANDO PUBLICACIÓN BASE EN API REST ===")
-url_api = "https://spinoff.link/wp-json/wp/v2/posts/21202"
+def buscar_en_texto(texto):
+    if not texto or not isinstance(texto, str):
+        return None
+    # 1. Buscar patrón tecnotv.club/XXXX/
+    m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', texto, re.IGNORECASE)
+    if m: return m.group(1)
+    
+    # 2. Buscar patrón /XXXX/android
+    m = re.search(r'\/([a-zA-Z0-9]{4,8})\/android', texto, re.IGNORECASE)
+    if m: return m.group(1)
+    
+    # 3. Buscar cualquier enlace o atributo con 4 letras/números
+    m = re.search(r'["\']/([a-zA-Z0-9]{4})\/["\']', texto, re.IGNORECASE)
+    if m: return m.group(1)
 
+    return None
+
+print("=== 1. CONSULTANDO PUBLICACIONES RECIENTES EN LA API ===")
 try:
-    res = requests.get(url_api, headers=headers, timeout=15)
+    # Solicitamos directamente los posts recientes en lugar del ID 21202 estático
+    res = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=10", headers=headers, timeout=15)
+    print(f"Estado HTTP API: {res.status_code}")
+    
     if res.status_code == 200:
         data = res.json()
-        html_content = data.get('content', {}).get('rendered', '')
-        
-        # Extraer texto y enlaces con parser nativo
-        parser = SimpleHTMLParser()
-        parser.feed(html_content)
-        texto_limpio = " ".join(parser.text)
-        
-        print("\n--- Texto extraído de la entrada 21202 ---")
-        print(texto_limpio[:1000])
-        print("-------------------------------------------\n")
-
-        print("Enlaces encontrados en la publicación:")
-        for href in parser.links:
-            print(f" - {href}")
-            match = re.search(r'(?:tecnotv|m3u|lista|play|get|file|stream)[^/]*\/([a-zA-Z0-9]{4,8})', href, re.IGNORECASE)
-            if match and not nuevo_codigo:
-                nuevo_codigo = match.group(1)
-
-        # Si no hay código en enlaces, buscar patrones en el contenido HTML crudo
-        if not nuevo_codigo:
-            match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', html_content, re.IGNORECASE) or \
-                    re.search(r'\/([a-zA-Z0-9]{4,8})\/android', html_content, re.IGNORECASE) or \
-                    re.search(r'\/([a-zA-Z0-9]{4,8})\/', html_content, re.IGNORECASE)
-            if match:
-                nuevo_codigo = match.group(1)
+        if isinstance(data, list):
+            for post in data:
+                print(f"-> Analizando post ID {post.get('id')}: {post.get('title', {}).get('rendered', '')}")
+                html_content = post.get('content', {}).get('rendered', '')
+                
+                # Probar extracción sobre el contenido del post
+                nuevo_codigo = buscar_en_texto(html_content)
+                if nuevo_codigo:
+                    print(f"¡Código hallado en post ID {post.get('id')}!: [{nuevo_codigo}]")
+                    break
+        else:
+            print(f"La API no devolvió una lista válida. Respuesta: {str(data)[:200]}")
+    else:
+        print(f"Respuesta inesperada de la API: {res.text[:200]}")
 
 except Exception as e:
-    print(f"Error durante la consulta a la API: {e}")
+    print(f"Error consultando la API: {e}")
 
-# === 2. BÚSQUEDA EN ÚLTIMOS POSTS SI EL POST 21202 FALLÓ ===
+# Intento 2: Scraping directo a la portada HTML si la API falla o está vacía
 if not nuevo_codigo:
-    print("\n=== 2. REVISANDO ÚLTIMAS PUBLICACIONES PUBLICADAS ===")
+    print("\n=== 2. INTENTANDO SCRAPING DIRECTO DE LA PORTADA HTML ===")
     try:
-        res_recientes = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=5", headers=headers, timeout=15)
-        if res_recientes.status_code == 200:
-            posts = res_recientes.json()
-            for p in posts:
-                print(f"Analizando Post ID {p.get('id')} - Título: {p.get('title', {}).get('rendered')}")
-                contenido = p.get('content', {}).get('rendered', '')
-                
-                match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', contenido, re.IGNORECASE) or \
-                        re.search(r'\/([a-zA-Z0-9]{4,8})\/android', contenido, re.IGNORECASE)
-                if match:
-                    nuevo_codigo = match.group(1)
-                    print(f"¡Código hallado en post {p.get('id')}!: [{nuevo_codigo}]")
-                    break
+        res_web = requests.get("https://spinoff.link/", headers=headers, timeout=15)
+        print(f"Estado HTTP Web Directa: {res_web.status_code}")
+        if res_web.status_code == 200:
+            nuevo_codigo = buscar_en_texto(res_web.text)
+            
+            # Buscar también dentro de los enlaces <a> de la página
+            if not nuevo_codigo:
+                parser = SimpleHTMLParser()
+                parser.feed(res_web.text)
+                for link in parser.links:
+                    nuevo_codigo = buscar_en_texto(link)
+                    if nuevo_codigo:
+                        print(f"¡Código hallado en enlace directo!: [{nuevo_codigo}]")
+                        break
     except Exception as e:
-        print(f"Error al revisar publicaciones recientes: {e}")
+        print(f"Error realizando scraping directo: {e}")
 
-# === 3. RESULTADO DE EXTRACCIÓN ===
+# Comprobación final
 if not nuevo_codigo:
-    print("\n[!] CRÍTICO: No se detectó ningún código automático.")
-    print("Por favor revisa el bloque 'Texto extraído de la entrada 21202' o los 'Enlaces encontrados' impresos arriba.")
+    print("\n[!] CRÍTICO: No se pudo extraer el código por ningún medio.")
+    print("Es posible que la web requiera acceso especial o haya cambiado totalmente el formato.")
     exit(1)
 
-print(f"\n¡CÓDIGO FINAL DETECTADO!: [{nuevo_codigo}]")
+print(f"\n¡CÓDIGO DETECTADO CON ÉXITO!: [{nuevo_codigo}]")
 
-# === 4. ACTUALIZACIÓN EN GITHUB ===
+# === ACTUALIZACIÓN EN GITHUB ===
+print("\n=== ACTUALIZANDO ARCHIVO EN GITHUB ===")
 g = Github(token)
 repo = g.get_repo(repo_name)
 
@@ -117,8 +121,8 @@ if match_actual:
             content=contenido_nuevo,
             sha=file_content.sha
         )
-        print("¡Archivo lista.m3u actualizado exitosamente en GitHub!")
+        print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
     else:
-        print("El código no ha cambiado. No se requieren cambios en GitHub.")
+        print("El código detectado es idéntico al actual. No se requieren cambios.")
 else:
     print("Aviso: No se encontró la estructura tecnotv.club/XXXX/ en tu archivo lista.m3u local.")
