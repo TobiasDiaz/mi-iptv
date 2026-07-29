@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from bs4 import BeautifulSoup
+from html.parser import HTMLParser
 from github import Github
 
 token = os.environ.get('GH_TOKEN')
@@ -11,6 +11,22 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/json,text/plain,*/*'
 }
+
+# Parser nativo de HTML para extraer texto y enlaces sin librerías externas
+class SimpleHTMLParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.text = []
+        self.links = []
+
+    def handle_data(self, data):
+        self.text.append(data)
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'a':
+            for attr, val in attrs:
+                if attr == 'href' and val:
+                    self.links.append(val)
 
 nuevo_codigo = None
 
@@ -23,30 +39,27 @@ try:
         data = res.json()
         html_content = data.get('content', {}).get('rendered', '')
         
-        # Limpiar HTML para ver el texto plano en el log si es necesario
-        soup = BeautifulSoup(html_content, 'html.parser')
-        texto_limpio = soup.get_text(separator=' ')
+        # Extraer texto y enlaces con parser nativo
+        parser = SimpleHTMLParser()
+        parser.feed(html_content)
+        texto_limpio = " ".join(parser.text)
         
         print("\n--- Texto extraído de la entrada 21202 ---")
-        print(texto_limpio[:1000])  # Imprime los primeros 1000 caracteres
+        print(texto_limpio[:1000])
         print("-------------------------------------------\n")
 
-        # Intentar extraer patrones comunes (de 3 a 8 caracteres)
-        # 1. Enlaces a m3u, paste, o dominios conocidos
-        enlaces = soup.find_all('a', href=True)
         print("Enlaces encontrados en la publicación:")
-        for a in enlaces:
-            href = a['href']
+        for href in parser.links:
             print(f" - {href}")
-            # Buscar cualquier token dentro de los enlaces
             match = re.search(r'(?:tecnotv|m3u|lista|play|get|file|stream)[^/]*\/([a-zA-Z0-9]{4,8})', href, re.IGNORECASE)
             if match and not nuevo_codigo:
                 nuevo_codigo = match.group(1)
 
-        # 2. Si no hay token en enlaces, buscar patrones tecnotv o android en el HTML crudo
+        # Si no hay código en enlaces, buscar patrones en el contenido HTML crudo
         if not nuevo_codigo:
             match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', html_content, re.IGNORECASE) or \
-                    re.search(r'\/([a-zA-Z0-9]{4,8})\/android', html_content, re.IGNORECASE)
+                    re.search(r'\/([a-zA-Z0-9]{4,8})\/android', html_content, re.IGNORECASE) or \
+                    re.search(r'\/([a-zA-Z0-9]{4,8})\/', html_content, re.IGNORECASE)
             if match:
                 nuevo_codigo = match.group(1)
 
@@ -64,7 +77,6 @@ if not nuevo_codigo:
                 print(f"Analizando Post ID {p.get('id')} - Título: {p.get('title', {}).get('rendered')}")
                 contenido = p.get('content', {}).get('rendered', '')
                 
-                # Buscar cualquier coincidencia con tecnotv o enlaces m3u
                 match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', contenido, re.IGNORECASE) or \
                         re.search(r'\/([a-zA-Z0-9]{4,8})\/android', contenido, re.IGNORECASE)
                 if match:
