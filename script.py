@@ -3,54 +3,60 @@ import re
 import requests
 from github import Github
 
-# Variables desde GitHub Actions
 token = os.environ.get('GH_TOKEN')
 repo_name = os.environ.get('REPO_NAME')
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*'
 }
 
 nuevo_codigo = None
 
-print("Consultando la redirección directa del servidor de TecnoTV...")
+print("Consultando la API REST de WordPress en spinoff.link...")
 
-# Intentamos obtener la dirección directa a la que redirige TecnoTV
-urls_prueba = [
-    "https://tecnotv.club/android1.m3u",
-    "http://tecnotv.club/android1.m3u"
-]
+# ID de la publicación extraído del meta del HTML: 21202
+url_api = "https://spinoff.link/wp-json/wp/v2/posts/21202"
 
-for url in urls_prueba:
-    try:
-        # Hacemos una petición ligera HEAD permitiendo redirecciones
-        response = requests.head(url, headers=headers, allow_redirects=True, timeout=10)
-        url_final = response.url
-        print(f"URL obtenida del servidor: {url_final}")
+try:
+    res = requests.get(url_api, headers=headers, timeout=10)
+    if res.status_code == 200:
+        data = res.json()
+        # El contenido completo de la publicación está en data['content']['rendered']
+        contenido_html = data.get('content', {}).get('rendered', '')
         
-        # Buscamos el patrón de las 4 letras en la URL final (ej: tecnotv.club/65cg/android1.m3u)
-        match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', url_final)
+        # 1. Buscar coincidencia tecnotv.club/XXXX/
+        match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', contenido_html)
+        
+        # 2. Si no, buscar la ruta /XXXX/android1.m3u
+        if not match:
+            match = re.search(r'\/([a-zA-Z0-9]{4})\/android[0-9]*\.m3u', contenido_html)
+            
+        # 3. Buscar cualquier atributo o enlace de 4 caracteres
+        if not match:
+            match = re.search(r'["\']/([a-zA-Z0-9]{4})\/["\']', contenido_html)
+
         if match:
             nuevo_codigo = match.group(1)
-            print(f"¡Código capturado exitosamente!: [{nuevo_codigo}]")
-            break
-    except Exception as e:
-        print(f"Error consultando {url}: {e}")
+            print(f"¡Código detectado exitosamente mediante la API!: [{nuevo_codigo}]")
+        else:
+            print("No se encontró el patrón dentro del contenido de la API de la publicación 21202.")
+            
+            # Intento secundario: Buscar en las últimas publicaciones generales
+            res_recientes = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=5", headers=headers, timeout=10)
+            if res_recientes.status_code == 200:
+                texto_global = res_recientes.text
+                match_global = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', texto_global) or \
+                               re.search(r'\/([a-zA-Z0-9]{4})\/android', texto_global)
+                if match_global:
+                    nuevo_codigo = match_global.group(1)
+                    print(f"¡Código detectado en la API global!: [{nuevo_codigo}]")
 
-# Si no devolvió por HEAD, probamos con una petición GET ligera
-if not nuevo_codigo:
-    try:
-        response = requests.get("https://tecnotv.club/android1.m3u", headers=headers, stream=True, timeout=10)
-        url_final = response.url
-        match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', url_final)
-        if match:
-            nuevo_codigo = match.group(1)
-            print(f"¡Código capturado por GET!: [{nuevo_codigo}]")
-    except Exception as e:
-        print(f"Error en respaldo GET: {e}")
+except Exception as e:
+    print(f"Error consultando la API: {e}")
 
 if not nuevo_codigo:
-    print("CRÍTICO: No se pudo obtener el código del servidor.")
+    print("CRÍTICO: No se pudo extraer el código desde la API REST.")
     exit(1)
 
 # --- ACTUALIZACIÓN EN GITHUB ---
@@ -60,12 +66,11 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# Extraer el código que tienes actualmente guardado en lista.m3u
 match_actual = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', contenido_viejo)
 
 if match_actual:
     codigo_viejo = match_actual.group(1)
-    print(f"Código guardado actualmente en tu lista.m3u: [{codigo_viejo}]")
+    print(f"Código guardado actualmente en lista.m3u: [{codigo_viejo}]")
     
     if codigo_viejo != nuevo_codigo:
         print(f"Actualizando lista de [{codigo_viejo}] a [{nuevo_codigo}]...")
@@ -79,6 +84,6 @@ if match_actual:
         )
         print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
     else:
-        print("El código obtenido es idéntico al actual. Tu lista ya está al día.")
+        print("El código detectado es igual al guardado. No requiere cambios.")
 else:
     print("No se encontró el patrón de 4 letras dentro de tu archivo lista.m3u.")
