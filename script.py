@@ -1,85 +1,99 @@
 import os
 import re
 import requests
+from bs4 import BeautifulSoup
 from github import Github
 
 token = os.environ.get('GH_TOKEN')
 repo_name = os.environ.get('REPO_NAME')
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/json,text/plain,*/*'
 }
 
 nuevo_codigo = None
 
-print("Consultando la API REST de WordPress en spinoff.link...")
-
-# ID de la publicación base
+print("=== 1. CONSULTANDO PUBLICACIÓN BASE EN API REST ===")
 url_api = "https://spinoff.link/wp-json/wp/v2/posts/21202"
 
-# Expresiones regulares más flexibilizadas para atrapar el token
-patrones_regex = [
-    r'tecnotv\.club\/([a-zA-Z0-9]{4,6})\/',                      # tecnotv.club/XXXX/
-    r'\/([a-zA-Z0-9]{4,6})\/android[0-9]*\.m3u',                # /XXXX/android1.m3u
-    r'https?:\/\/[^\/]+\/([a-zA-Z0-9]{4})\/(?:android|lista)',  # http.../XXXX/android
-    r'["\']/([a-zA-Z0-9]{4})\/["\']',                           # "/XXXX/"
-    r'code\s*[:=]\s*["\']?([a-zA-Z0-9]{4})["\']?'               # code = "XXXX"
-]
-
-def buscar_codigo(texto):
-    for patron in patrones_regex:
-        match = re.search(patron, texto, re.IGNORECASE)
-        if match:
-            return match.group(1)
-    return None
-
 try:
-    # Intento 1: Post principal 21202
-    res = requests.get(url_api, headers=headers, timeout=10)
+    res = requests.get(url_api, headers=headers, timeout=15)
     if res.status_code == 200:
         data = res.json()
-        contenido_html = data.get('content', {}).get('rendered', '')
-        nuevo_codigo = buscar_codigo(contenido_html)
+        html_content = data.get('content', {}).get('rendered', '')
         
-        if nuevo_codigo:
-            print(f"¡Código detectado exitosamente en post 21202!: [{nuevo_codigo}]")
+        # Limpiar HTML para ver el texto plano en el log si es necesario
+        soup = BeautifulSoup(html_content, 'html.parser')
+        texto_limpio = soup.get_text(separator=' ')
+        
+        print("\n--- Texto extraído de la entrada 21202 ---")
+        print(texto_limpio[:1000])  # Imprime los primeros 1000 caracteres
+        print("-------------------------------------------\n")
 
-    # Intento 2: Buscar en los 10 posts más recientes si el post fijo falla
-    if not nuevo_codigo:
-        print("Buscando en las publicaciones recientes...")
-        res_recientes = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=10", headers=headers, timeout=10)
+        # Intentar extraer patrones comunes (de 3 a 8 caracteres)
+        # 1. Enlaces a m3u, paste, o dominios conocidos
+        enlaces = soup.find_all('a', href=True)
+        print("Enlaces encontrados en la publicación:")
+        for a in enlaces:
+            href = a['href']
+            print(f" - {href}")
+            # Buscar cualquier token dentro de los enlaces
+            match = re.search(r'(?:tecnotv|m3u|lista|play|get|file|stream)[^/]*\/([a-zA-Z0-9]{4,8})', href, re.IGNORECASE)
+            if match and not nuevo_codigo:
+                nuevo_codigo = match.group(1)
+
+        # 2. Si no hay token en enlaces, buscar patrones tecnotv o android en el HTML crudo
+        if not nuevo_codigo:
+            match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', html_content, re.IGNORECASE) or \
+                    re.search(r'\/([a-zA-Z0-9]{4,8})\/android', html_content, re.IGNORECASE)
+            if match:
+                nuevo_codigo = match.group(1)
+
+except Exception as e:
+    print(f"Error durante la consulta a la API: {e}")
+
+# === 2. BÚSQUEDA EN ÚLTIMOS POSTS SI EL POST 21202 FALLÓ ===
+if not nuevo_codigo:
+    print("\n=== 2. REVISANDO ÚLTIMAS PUBLICACIONES PUBLICADAS ===")
+    try:
+        res_recientes = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=5", headers=headers, timeout=15)
         if res_recientes.status_code == 200:
             posts = res_recientes.json()
             for p in posts:
-                html = p.get('content', {}).get('rendered', '')
-                nuevo_codigo = buscar_codigo(html)
-                if nuevo_codigo:
-                    print(f"¡Código detectado en publicación reciente ID {p.get('id')}!: [{nuevo_codigo}]")
+                print(f"Analizando Post ID {p.get('id')} - Título: {p.get('title', {}).get('rendered')}")
+                contenido = p.get('content', {}).get('rendered', '')
+                
+                # Buscar cualquier coincidencia con tecnotv o enlaces m3u
+                match = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', contenido, re.IGNORECASE) or \
+                        re.search(r'\/([a-zA-Z0-9]{4,8})\/android', contenido, re.IGNORECASE)
+                if match:
+                    nuevo_codigo = match.group(1)
+                    print(f"¡Código hallado en post {p.get('id')}!: [{nuevo_codigo}]")
                     break
+    except Exception as e:
+        print(f"Error al revisar publicaciones recientes: {e}")
 
-except Exception as e:
-    print(f"Error consultando la API: {e}")
-
-# Mensaje de respaldo/diagnóstico si falla completamente
+# === 3. RESULTADO DE EXTRACCIÓN ===
 if not nuevo_codigo:
-    print("CRÍTICO: No se pudo extraer el código desde la API REST.")
-    print("Revisar si la API devolvió contenido o si la web cambió la ruta de la lista.")
+    print("\n[!] CRÍTICO: No se detectó ningún código automático.")
+    print("Por favor revisa el bloque 'Texto extraído de la entrada 21202' o los 'Enlaces encontrados' impresos arriba.")
     exit(1)
 
-# --- ACTUALIZACIÓN EN GITHUB ---
+print(f"\n¡CÓDIGO FINAL DETECTADO!: [{nuevo_codigo}]")
+
+# === 4. ACTUALIZACIÓN EN GITHUB ===
 g = Github(token)
 repo = g.get_repo(repo_name)
 
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# Buscar código actual en el archivo m3u
-match_actual = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,6})\/', contenido_viejo)
+match_actual = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4,8})\/', contenido_viejo)
 
 if match_actual:
     codigo_viejo = match_actual.group(1)
-    print(f"Código guardado actualmente en lista.m3u: [{codigo_viejo}]")
+    print(f"Código guardado en lista.m3u: [{codigo_viejo}]")
     
     if codigo_viejo != nuevo_codigo:
         print(f"Actualizando lista de [{codigo_viejo}] a [{nuevo_codigo}]...")
@@ -91,8 +105,8 @@ if match_actual:
             content=contenido_nuevo,
             sha=file_content.sha
         )
-        print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
+        print("¡Archivo lista.m3u actualizado exitosamente en GitHub!")
     else:
-        print("El código detectado es igual al guardado. No requiere cambios.")
+        print("El código no ha cambiado. No se requieren cambios en GitHub.")
 else:
-    print("No se encontró el patrón anterior dentro de tu archivo lista.m3u.")
+    print("Aviso: No se encontró la estructura tecnotv.club/XXXX/ en tu archivo lista.m3u local.")
