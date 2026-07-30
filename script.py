@@ -9,46 +9,59 @@ repo_name = os.environ.get('REPO_NAME')
 URL_PAGINA = "https://spinoff.link/listas-iptv-actualizadas-2025/"
 nuevo_codigo = None
 
-print(f"=== ABRIENDO NAVEGADOR Y NAVEGANDO A: {URL_PAGINA} ===")
+print(f"=== NAVEGANDO A: {URL_PAGINA} ===")
 
 try:
     with sync_playwright() as p:
-        # Abrir un navegador Chromium invisible pero idéntico a un usuario real
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
         )
         page = context.new_page()
         
-        # Cargar la página y esperar a que el JavaScript genere el contenido
+        # Cargar página
         page.goto(URL_PAGINA, wait_until="networkidle", timeout=60000)
         
-        # Obtener el contenido completo de la página ya renderizada por JavaScript
-        content = page.content()
+        # Seleccionar específicamente el input de ANDROID 1 usando su atributo data-iptv
+        selector_input = 'input[data-iptv="android1.m3u"]'
         
-        # 1. Buscar coincidencia exacta tecnotv.club/XXXX/android
-        m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/android', content, re.IGNORECASE)
+        print("Esperando a que el campo deje de decir 'Cargando...'...")
+        
+        # Esperar hasta 15 segundos a que el valor del input NO sea "Cargando..." ni esté vacío
+        page.wait_for_function(
+            f'''() => {{
+                const el = document.querySelector('{selector_input}');
+                return el && el.value && el.value !== "Cargando..." && el.value.includes("tecnotv.club");
+            }}''',
+            timeout=15000
+        )
+        
+        # Leer el valor final ya cargado por JavaScript
+        valor_final = page.locator(selector_input).input_value()
+        print(f"Valor obtenido del cuadro ANDROID 1: [{valor_final}]")
+        
+        # Extraer los 4 caracteres justo antes de /android1.m3u (ejemplo: 65cg)
+        m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/android1\.m3u', valor_final, re.IGNORECASE)
         if m:
             nuevo_codigo = m.group(1)
-            print(f"¡Código hallado en el render del navegador!: [{nuevo_codigo}]")
-            
-        # 2. Si no coincide exactamente, buscar en cualquier caja de texto que diga /android1.m3u
-        if not nuevo_codigo:
-            m = re.search(r'\/([a-zA-Z0-9]{4})\/android1\.m3u', content, re.IGNORECASE)
-            if m:
-                nuevo_codigo = m.group(1)
-                print(f"¡Código hallado con patrón alternativo!: [{nuevo_codigo}]")
+            print(f"¡Código extraído con éxito!: [{nuevo_codigo}]")
+        else:
+            # Respaldo si la URL varía ligeramente
+            m_alt = re.search(r'\/([a-zA-Z0-9]{4})\/', valor_final)
+            if m_alt:
+                nuevo_codigo = m_alt.group(1)
+                print(f"¡Código extraído (patrón alternativo)!: [{nuevo_codigo}]")
 
         browser.close()
 
 except Exception as e:
-    print(f"Error al ejecutar el navegador: {e}")
+    print(f"Error al capturar el enlace dinámico: {e}")
 
 if not nuevo_codigo:
     print("\n[!] CRÍTICO: No se pudo extraer el código de 4 caracteres.")
     exit(1)
 
-print(f"\n¡CÓDIGO FINAL DETECTADO!: [{nuevo_codigo}]")
+print(f"\n¡CÓDIGO EXTRAÍDO Y LISTO!: [{nuevo_codigo}]")
 
 # === ACTUALIZACIÓN EN GITHUB ===
 print("\n=== ACTUALIZANDO ARCHIVO EN GITHUB ===")
@@ -58,6 +71,7 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
+# Reemplaza ÚNICAMENTE los 4 caracteres dentro de tu archivo lista.m3u
 contenido_nuevo = re.sub(
     r'(tecnotv\.club\/)[a-zA-Z0-9]{4}(\/)',
     f'\\1{nuevo_codigo}\\2',
@@ -65,7 +79,7 @@ contenido_nuevo = re.sub(
 )
 
 if contenido_viejo != contenido_nuevo:
-    print(f"Actualizando lista.m3u con el nuevo código: [{nuevo_codigo}]...")
+    print(f"Actualizando lista.m3u con el código: [{nuevo_codigo}]...")
     repo.update_file(
         path=file_content.path,
         message=f"Auto-update código: {nuevo_codigo}",
@@ -74,4 +88,4 @@ if contenido_viejo != contenido_nuevo:
     )
     print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
 else:
-    print("El código detectado es idéntico al que ya está guardado en lista.m3u.")
+    print("El código detectado es idéntico al guardado. No se requieren cambios.")
