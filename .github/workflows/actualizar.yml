@@ -1,31 +1,29 @@
-name: Actualizar Lista IPTV
+name: Actualizar Lista IPTV TecnoTV
 
 on:
   schedule:
-    # Se ejecuta TODOS LOS DÍAS a las 18:00 UTC (12:00 PM Hora Centroamérica)
-    - cron: '0 18 * * *'
-  
-  # Mantiene la opción de ejecutarlo manualmente cuando quieras
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:
-  build:
+  update-list:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      
+      - name: Descargar repositorio
+        uses: actions/checkout@v3
+
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          
-      - name: Instalar dependencias
+
+      - name: Instalar librerias
         run: |
-          pip install requests PyGithub
-          
-      - name: Ejecutar script de actualización
+          python -m pip install --upgrade pip
+          pip install requests pygithub
+
+      - name: Ejecutar Script de Actualizacion
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
           REPO_NAME: ${{ github.repository }}
-        run: |
-          python script.py
+        run: python script.py
