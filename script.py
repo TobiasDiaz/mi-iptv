@@ -19,36 +19,61 @@ try:
         )
         page = context.new_page()
         
-        page.goto(URL_PAGINA, wait_until="networkidle", timeout=60000)
+        # Cargar página con timeout amplio de red
+        page.goto(URL_PAGINA, wait_until="domcontentloaded", timeout=60000)
+        
+        # Hacer scroll para activar lazy loading o scripts de la web
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight / 2);")
+        page.wait_for_timeout(3000)
+        
         selector_input = 'input[data-iptv="android1.m3u"]'
         
-        print("Esperando a que el campo cargue el código real...")
+        print("Esperando a que el campo cargue el código real (Timeout ampliado a 45s)...")
         
-        page.wait_for_function(
-            f'''() => {{
-                const el = document.querySelector('{selector_input}');
-                return el && el.value && el.value !== "Cargando..." && el.value.includes("tecnotv.club");
-            }}''',
-            timeout=15000
-        )
-        
-        valor_final = page.locator(selector_input).input_value()
-        print(f"Valor obtenido del cuadro ANDROID 1: [{valor_final}]")
-        
-        m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/android1\.m3u', valor_final, re.IGNORECASE)
-        if m:
-            nuevo_codigo = m.group(1)
-            print(f"¡Código extraído con éxito!: [{nuevo_codigo}]")
-        else:
-            m_alt = re.search(r'\/([a-zA-Z0-9]{4})\/', valor_final)
-            if m_alt:
-                nuevo_codigo = m_alt.group(1)
-                print(f"¡Código extraído (patrón alternativo)!: [{nuevo_codigo}]")
+        try:
+            # Ampliado a 45.000 ms (45 segundos)
+            page.wait_for_function(
+                f'''() => {{
+                    const el = document.querySelector('{selector_input}');
+                    return el && el.value && el.value !== "Cargando..." && el.value.includes("tecnotv.club");
+                }}''',
+                timeout=45000
+            )
+        except Exception as err_wait:
+            print(f"Aviso: La espera directa dio tiempo agotado, intentando lectura alternativa... ({err_wait})")
+
+        # Intentar leer el valor final cargado
+        try:
+            valor_final = page.locator(selector_input).input_value()
+            print(f"Valor obtenido del cuadro ANDROID 1: [{valor_final}]")
+            
+            m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/android1\.m3u', valor_final, re.IGNORECASE)
+            if m:
+                nuevo_codigo = m.group(1)
+                print(f"¡Código extraído del input!: [{nuevo_codigo}]")
+        except:
+            pass
+
+        # Respaldo 1: Buscar en todo el HTML del navegador si el input no se leyó bien
+        if not nuevo_codigo:
+            content = page.content()
+            m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/android1\.m3u', content, re.IGNORECASE)
+            if m:
+                nuevo_codigo = m.group(1)
+                print(f"¡Código extraído del HTML del navegador (Respaldo 1)!: [{nuevo_codigo}]")
+
+        # Respaldo 2: Buscar cualquier coincidencia con tecnotv.club/XXXX/
+        if not nuevo_codigo:
+            content = page.content()
+            m = re.search(r'tecnotv\.club\/([a-zA-Z0-9]{4})\/', content, re.IGNORECASE)
+            if m:
+                nuevo_codigo = m.group(1)
+                print(f"¡Código extraído por patrón general (Respaldo 2)!: [{nuevo_codigo}]")
 
         browser.close()
 
 except Exception as e:
-    print(f"Error al capturar el enlace dinámico: {e}")
+    print(f"Error general durante el raspado: {e}")
 
 if not nuevo_codigo:
     print("\n[!] CRÍTICO: No se pudo extraer el código de 4 caracteres.")
@@ -70,11 +95,7 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# FIX REGEX QUIRÚRGICO:
-# Busca lo que esté inmediatamente después de 'tecnotv.club/' (o de la raíz '/')
-# y reemplaza ÚNICAMENTE el bloque de la carpeta (ej. 'ucg', 'b2c2', 'adkodi', etc.) 
-# sin alterar 'http://', 'tecnotv.club/' ni lo que sigue después.
-
+# Reemplazo seguro mediante Lookbehind
 patron_reemplazo = r'(?<=tecnotv\.club\/)[^\/]+'
 
 contenido_nuevo = re.sub(
@@ -91,6 +112,6 @@ if contenido_viejo != contenido_nuevo:
         content=contenido_nuevo,
         sha=file_content.sha
     )
-    print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub y la URL quedó corregida!")
+    print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
 else:
     print("El código detectado es idéntico al guardado. No se requieren cambios.")
