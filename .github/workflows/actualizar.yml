@@ -2,12 +2,14 @@ name: Actualizar Lista IPTV
 
 on:
   schedule:
-    - cron: '5 18 * * *' # Todos los días a las 12:00 PM (UTC-6 Centroamérica)
+    - cron: '5 18 * * *'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # <--- Este permiso es INDISPENSABLE para actualizar el repo
     steps:
       - uses: actions/checkout@v3
       
@@ -16,14 +18,14 @@ jobs:
         with:
           python-version: '3.10'
           
-      - name: Instalar dependencias y Navegador Playwright
+      - name: Instalar dependencias
         run: |
           pip install requests PyGithub playwright
           playwright install chromium
           
-      - name: Ejecutar script de actualización
+      - name: Ejecutar script
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Usar el token nativo de GitHub
           REPO_NAME: ${{ github.repository }}
         run: |
           python script.py
