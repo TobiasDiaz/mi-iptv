@@ -22,7 +22,7 @@ try:
         page.goto(URL_PAGINA, wait_until="networkidle", timeout=60000)
         selector_input = 'input[data-iptv="android1.m3u"]'
         
-        print("Esperando a que el campo deje de decir 'Cargando...'...")
+        print("Esperando a que el campo cargue el código real...")
         
         page.wait_for_function(
             f'''() => {{
@@ -70,22 +70,27 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# FIX: Busca 'tecnotv.club/' seguido de CUALQUIER texto hasta la siguiente '/' (incluyendo 'adkodi')
-# y lo reemplaza exactamente por los nuevos 4 caracteres.
+# FIX REGEX QUIRÚRGICO:
+# Busca lo que esté inmediatamente después de 'tecnotv.club/' (o de la raíz '/')
+# y reemplaza ÚNICAMENTE el bloque de la carpeta (ej. 'ucg', 'b2c2', 'adkodi', etc.) 
+# sin alterar 'http://', 'tecnotv.club/' ni lo que sigue después.
+
+patron_reemplazo = r'(?<=tecnotv\.club\/)[^\/]+'
+
 contenido_nuevo = re.sub(
-    r'(tecnotv\.club\/)[^\/]+(\/)',
-    f'\\1{nuevo_codigo}\\2',
+    patron_reemplazo,
+    nuevo_codigo,
     contenido_viejo
 )
 
 if contenido_viejo != contenido_nuevo:
-    print(f"Actualizando lista.m3u reemplazando contenido antiguo por: [{nuevo_codigo}]...")
+    print(f"Actualizando lista.m3u aplicando el nuevo código: [{nuevo_codigo}]...")
     repo.update_file(
         path=file_content.path,
         message=f"Auto-update código: {nuevo_codigo}",
         content=contenido_nuevo,
         sha=file_content.sha
     )
-    print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
+    print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub y la URL quedó corregida!")
 else:
-    print("El código detectado ya está aplicado en lista.m3u. No se requieren cambios.")
+    print("El código detectado es idéntico al guardado. No se requieren cambios.")
