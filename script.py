@@ -3,7 +3,6 @@ import re
 from playwright.sync_api import sync_playwright
 from github import Github, Auth
 
-# Obtener variables de entorno
 token = os.environ.get('GH_TOKEN')
 repo_name = os.environ.get('REPO_NAME')
 
@@ -64,7 +63,6 @@ if not token:
     print("[!] ERROR CRÍTICO: El token GH_TOKEN está vacío. Revisa tus Secrets en GitHub.")
     exit(1)
 
-# Nueva sintaxis oficial de PyGithub
 auth = Auth.Token(token)
 g = Github(auth=auth)
 repo = g.get_repo(repo_name)
@@ -72,15 +70,16 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# Reemplazar únicamente los 4 caracteres en la lista
+# FIX: Busca 'tecnotv.club/' seguido de CUALQUIER texto hasta la siguiente '/' (incluyendo 'adkodi')
+# y lo reemplaza exactamente por los nuevos 4 caracteres.
 contenido_nuevo = re.sub(
-    r'(tecnotv\.club\/)[a-zA-Z0-9]{4}(\/)',
+    r'(tecnotv\.club\/)[^\/]+(\/)',
     f'\\1{nuevo_codigo}\\2',
     contenido_viejo
 )
 
 if contenido_viejo != contenido_nuevo:
-    print(f"Actualizando lista.m3u con el nuevo código: [{nuevo_codigo}]...")
+    print(f"Actualizando lista.m3u reemplazando contenido antiguo por: [{nuevo_codigo}]...")
     repo.update_file(
         path=file_content.path,
         message=f"Auto-update código: {nuevo_codigo}",
@@ -89,4 +88,4 @@ if contenido_viejo != contenido_nuevo:
     )
     print("¡Tu archivo lista.m3u se actualizó con éxito en GitHub!")
 else:
-    print("El código detectado es idéntico al guardado. No se requieren cambios.")
+    print("El código detectado ya está aplicado en lista.m3u. No se requieren cambios.")
