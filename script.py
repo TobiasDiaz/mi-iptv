@@ -1,7 +1,6 @@
 import os
 import re
 import requests
-from html.parser import HTMLParser
 from github import Github
 
 token = os.environ.get('GH_TOKEN')
@@ -12,95 +11,92 @@ headers = {
     'Accept': 'text/html,application/json,text/plain,*/*'
 }
 
-class SimpleHTMLParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.links = []
-        self.scripts = []
-
-    def handle_starttag(self, tag, attrs):
-        if tag == 'a':
-            for attr, val in attrs:
-                if attr == 'href' and val:
-                    self.links.append(val)
-        elif tag == 'script':
-            for attr, val in attrs:
-                if attr == 'src' and val:
-                    self.scripts.append(val)
-
 nuevo_codigo = None
 
-def extraer_codigo_exacto(texto):
+def extraer_codigo_4_caracteres(texto):
     if not texto or not isinstance(texto, str):
         return None
-    
-    # 1. Buscar el código de 4 caracteres exactos dentro de cualquier URL con android1.m3u o similar
-    # Ejemplo: tecnotv.club/65cg/android1.m3u o /adkodi/65cg/android1.m3u
-    m = re.search(r'\/([a-zA-Z0-9]{4})\/android[0-9]*\.m3u', texto, re.IGNORECASE)
-    if m and m.group(1).lower() != 'kodi':
-        return m.group(1)
 
-    # 2. Buscar 4 caracteres exactos justo después de tecnotv.club/ o adkodi/
-    m = re.search(r'(?:tecnotv\.club|adkodi)\/([a-zA-Z0-9]{4})\/', texto, re.IGNORECASE)
-    if m and m.group(1).lower() != 'kodi':
-        return m.group(1)
+    # Exclusiones conocidas que NO son códigos
+    ignorar = {'kodi', 'html', 'json', 'page', 'post', 'main', 'm3u8', 'home'}
 
-    # 3. Buscar 4 caracteres exactos antes de la extensión .m3u
-    m = re.search(r'\/([a-zA-Z0-9]{4})\/(?:lista|m3u)', texto, re.IGNORECASE)
-    if m and m.group(1).lower() != 'kodi':
-        return m.group(1)
+    # 1. Buscar código de 4 caracteres antes de .m3u (ejemplo: /65cg/android1.m3u o /65cg.m3u)
+    coincidencias = re.findall(r'\/([a-zA-Z0-9]{4})\/(?:android|lista|[a-zA-Z0-9_-]+\.m3u)', texto, re.IGNORECASE)
+    for c in coincidencias:
+        if c.lower() not in ignorar:
+            return c
+
+    # 2. Buscar 4 caracteres acompañados de tecnotv o adkodi (ejemplo: tecnotv.club/65cg/ o adkodi/65cg/)
+    coincidencias = re.findall(r'(?:tecnotv|adkodi)[^\/]*\/([a-zA-Z0-9]{4})\/', texto, re.IGNORECASE)
+    for c in coincidencias:
+        if c.lower() not in ignorar:
+            return c
+
+    # 3. Buscar estructura tipo /65cg/ en cualquier enlace que contenga .m3u
+    coincidencias = re.findall(r'\/([a-zA-Z0-9]{4})\/', texto)
+    for c in coincidencias:
+        if c.lower() not in ignorar and '.m3u' in texto:
+            return c
 
     return None
 
-print("=== 1. BUSCANDO EN LA API DE SPINOFF ===")
-try:
-    res_search = requests.get("https://spinoff.link/wp-json/wp/v2/posts?per_page=10", headers=headers, timeout=15)
-    if res_search.status_code == 200 and isinstance(res_search.json(), list):
-        for post in res_search.json():
-            nuevo_codigo = extraer_codigo_exacto(post.get('content', {}).get('rendered', ''))
-            if nuevo_codigo:
-                print(f"¡Código de 4 caracteres hallado!: [{nuevo_codigo}]")
-                break
-except Exception as e:
-    print(f"Error en API: {e}")
+print("=== 1. BUSCANDO EN POSTS Y PÁGINAS RECIENTES DE LA API ===")
+urls_api = [
+    "https://spinoff.link/wp-json/wp/v2/posts?per_page=20",
+    "https://spinoff.link/wp-json/wp/v2/pages?per_page=20",
+    "https://spinoff.link/wp-json/wp/v2/posts?search=iptv",
+    "https://spinoff.link/wp-json/wp/v2/posts?search=tecnotv"
+]
+
+for url in urls_api:
+    try:
+        res = requests.get(url, headers=headers, timeout=10)
+        if res.status_code == 200:
+            datos = res.json()
+            if isinstance(datos, list):
+                for item in datos:
+                    # Buscar en el contenido renderizado
+                    contenido = item.get('content', {}).get('rendered', '')
+                    nuevo_codigo = extraer_codigo_4_caracteres(contenido)
+                    if nuevo_codigo:
+                        print(f"¡Código de 4 caracteres hallado en API ({url})!: [{nuevo_codigo}]")
+                        break
+                    
+                    # Buscar en el extracto (excerpt)
+                    excerpt = item.get('excerpt', {}).get('rendered', '')
+                    nuevo_codigo = extraer_codigo_4_caracteres(excerpt)
+                    if nuevo_codigo:
+                        print(f"¡Código hallado en Excerpt!: [{nuevo_codigo}]")
+                        break
+        if nuevo_codigo:
+            break
+    except Exception as e:
+        print(f"Aviso en API ({url}): {e}")
 
 if not nuevo_codigo:
-    print("\n=== 2. ESCANEANDO LA WEB DIRECTA ===")
-    try:
-        res_web = requests.get("https://spinoff.link/", headers=headers, timeout=15)
-        if res_web.status_code == 200:
-            parser = SimpleHTMLParser()
-            parser.feed(res_web.text)
-            
-            # Buscar en enlaces HTML de la página
-            for link in parser.links:
-                nuevo_codigo = extraer_codigo_exacto(link)
+    print("\n=== 2. SCRAPING DIRECTO EN PÁGINAS PRINCIPALES ===")
+    rutas_web = [
+        "https://spinoff.link/",
+        "https://spinoff.link/category/iptv/",
+        "https://spinoff.link/lista-iptv/"
+    ]
+    
+    for ruta in rutas_web:
+        try:
+            res_web = requests.get(ruta, headers=headers, timeout=12)
+            if res_web.status_code == 200:
+                nuevo_codigo = extraer_codigo_4_caracteres(res_web.text)
                 if nuevo_codigo:
-                    print(f"¡Código hallado en enlace!: [{nuevo_codigo}]")
+                    print(f"¡Código de 4 caracteres hallado en ({ruta})!: [{nuevo_codigo}]")
                     break
-
-            # Si no está en enlaces, buscar en scripts JS
-            if not nuevo_codigo:
-                for script_url in parser.scripts[:10]:
-                    if not script_url.startswith('http'):
-                        script_url = "https://spinoff.link" + script_url
-                    try:
-                        res_js = requests.get(script_url, headers=headers, timeout=5)
-                        if res_js.status_code == 200:
-                            nuevo_codigo = extraer_codigo_exacto(res_js.text)
-                            if nuevo_codigo:
-                                print(f"¡Código hallado en script JS!: [{nuevo_codigo}]")
-                                break
-                    except:
-                        pass
-    except Exception as e:
-        print(f"Error en web pública: {e}")
+        except Exception as e:
+            print(f"Error visitando {ruta}: {e}")
 
 if not nuevo_codigo:
     print("\n[!] CRÍTICO: No se pudo extraer el código de 4 caracteres.")
     exit(1)
 
-print(f"\n¡CÓDIGO EXTRAÍDO (4 CARACTERES): [{nuevo_codigo}]")
+print(f"\n¡CÓDIGO EXTRAÍDO CON ÉXITO!: [{nuevo_codigo}]")
 
 # === ACTUALIZACIÓN EN GITHUB ===
 print("\n=== ACTUALIZANDO ARCHIVO EN GITHUB ===")
@@ -110,7 +106,7 @@ repo = g.get_repo(repo_name)
 file_content = repo.get_contents('lista.m3u')
 contenido_viejo = file_content.decoded_content.decode('utf-8')
 
-# Reemplaza ÚNICAMENTE el código de 4 caracteres dentro de tu estructura tecnotv.club/XXXX/
+# Reemplaza ÚNICAMENTE los 4 caracteres dentro de tecnotv.club/XXXX/
 contenido_nuevo = re.sub(
     r'(tecnotv\.club\/)[a-zA-Z0-9]{4}(\/)',
     f'\\1{nuevo_codigo}\\2',
@@ -118,13 +114,13 @@ contenido_nuevo = re.sub(
 )
 
 if contenido_viejo != contenido_nuevo:
-    print(f"Actualizando tu lista.m3u con el código exacto: [{nuevo_codigo}]...")
+    print(f"Actualizando tu lista.m3u con el código: [{nuevo_codigo}]...")
     repo.update_file(
         path=file_content.path,
         message=f"Auto-update código: {nuevo_codigo}",
         content=contenido_nuevo,
         sha=file_content.sha
     )
-    print("¡Tu archivo lista.m3u se actualizó correctamente con los 4 caracteres!")
+    print("¡Tu archivo lista.m3u se actualizó correctamente en GitHub!")
 else:
     print("El código de 4 caracteres en la web es igual al que ya tienes guardado.")
