@@ -8,7 +8,7 @@ http://tecnotv.club/65cg/phpcode/android2.php?c=354&f=.m3u8|User-Agent=suplayer
 #EXTINF:-1 tvg-id="" tvg-name="TecnoRadio" tvg-logo="https://imgur.com/oyRIk5f.png" group-title="Radio", TecnoRadio
 https://stream.zeno.fm/qvq7sm8mymzuv.m3u
 
-#EXTINF:-1 tvg-id="NickelodeonEast.us" tvg-name="Nickelodeon HD" tvg-logo="" group-title="TV PREMIUM",Nickelodeon HD
+#EXTINF:-1 tvg-id="Nickelodeon.lat" tvg-name="Nickelodeon HD" tvg-logo="" group-title="TV PREMIUM",Nickelodeon HD
 http://tecnotv.club/65cg/phpcode/lista01.php?c=a0h6&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="DiscoveryKids.us" tvg-name="Discovery Kids HD" tvg-logo="" group-title="TV PREMIUM",Discovery Kids HD
 http://tecnotv.club/65cg/phpcode/lista01.php?c=a0eg&token=tecnotokenplustv230516F&f=.m3u8
