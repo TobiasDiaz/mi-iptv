@@ -1,4 +1,5 @@
 #EXTM3U
+#EXTM3U x-tvg-url="https://epgshare01.online/epgshare01/epg_ripper_ALL.xml.gz"
 #EXTINF:-1 tvg-logo="https://imgur.com/TviWIyE.png" group-title="INFO",ANDROID 1
 http://tecnotv.club/65cg/phpcode/android2.php?c=354&f=.m3u8|User-Agent=suplayer
 #EXTINF:-1 tvg-logo="https://imgur.com/5TKzHnS.png" group-title="INFO",Telegram: @TecnotvChat
