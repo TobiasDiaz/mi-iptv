@@ -46,7 +46,7 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a02i&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fs&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="BethelTV.pe" tvg-name="BETHEL TV" group-title="TV PREMIUM",BETHEL TV
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hn&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Bitme.lat" tvg-name="Bitme" group-title="TV PREMIUM",Bitme
+#EXTINF:-1 tvg-id="Canal.BitMe.mx" tvg-name="Bitme" group-title="TV PREMIUM",Bitme
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a00f&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal1.co" tvg-name="Canal 1" group-title="TV PREMIUM",Canal 1
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a020&token=tecnotokenplustv230516F&f=.m3u8
@@ -272,7 +272,7 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0ht&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a02d&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="NickJr.lat" tvg-name="Nick Jr." group-title="TV PREMIUM",Nick Jr.
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0eo&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Nickelodeon.(Centro).sv" tvg-name="Nickelodeon HD" group-title="TV PREMIUM",Nickelodeon HD
+#EXTINF:-1 tvg-id="Canal.Nickelodeon.(México).mx" tvg-name="Nickelodeon HD" group-title="TV PREMIUM",Nickelodeon HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0h6&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="NTN24.co" tvg-name="NTN24" group-title="TV PREMIUM",NTN24
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0cv&token=tecnotokenplustv230516F&f=.m3u8
