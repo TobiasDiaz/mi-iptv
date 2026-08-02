@@ -8,7 +8,7 @@ http://tecnotv.club/cm7j/phpcode/android2.php?c=354&f=.m3u8|User-Agent=suplayer
 https://stream.zeno.fm/qvq7sm8mymzuv.m3u
 #EXTINF:-1 tvg-id="24Horas.cl" tvg-name="Canal 24 Horas" group-title="TV PREMIUM",24 Horas (Chile)
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hb&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.A&amp;E.(México).mx" tvg-name="A&E" group-title="TV PREMIUM",A&E
+#EXTINF:-1 tvg-id="Canal.A&amp;E.(México).sv" tvg-name="A&E" group-title="TV PREMIUM",A&E
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0c3&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.A&amp;E.(México).mx" tvg-name="A&E HD" group-title="TV PREMIUM",A&E HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0g8&token=tecnotokenplustv230516F&f=.m3u8
