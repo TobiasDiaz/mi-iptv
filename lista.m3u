@@ -212,7 +212,7 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0gn&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fx&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="HBOPlus.lat" tvg-name="HBO Plus" group-title="TV PREMIUM",HBO Plus
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0d4&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="HBOPop.lat" tvg-name="HBO POP HD" group-title="TV PREMIUM",HBO POP HD
+#EXTINF:-1 tvg-id="HBO.POP.(HBOPOP).pe" tvg-name="HBO POP HD" group-title="TV PREMIUM",HBO POP HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0h4&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="HBOSignature.lat" tvg-name="HBO Signature" group-title="TV PREMIUM",HBO Signature
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fw&token=tecnotokenplustv230516F&f=.m3u8
