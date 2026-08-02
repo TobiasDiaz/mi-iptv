@@ -8,11 +8,11 @@ http://tecnotv.club/cm7j/phpcode/android2.php?c=354&f=.m3u8|User-Agent=suplayer
 https://stream.zeno.fm/qvq7sm8mymzuv.m3u
 #EXTINF:-1 tvg-id="24Horas.cl" tvg-name="Canal 24 Horas" group-title="TV PREMIUM",24 Horas (Chile)
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hb&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="A&amp;E.(A&amp;E).pe" tvg-name="A&E" group-title="TV PREMIUM",A&E
+#EXTINF:-1 tvg-id="Canal.A&amp;E.(México).mx" tvg-name="A&E" group-title="TV PREMIUM",A&E
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0c3&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.A&amp;E.(México).mx" tvg-name="A&E HD" group-title="TV PREMIUM",A&E HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0g8&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="AdultSwim.lat" tvg-name="Adult Swim" group-title="TV PREMIUM",Adult Swim
+#EXTINF:-1 tvg-id="AdultSwim.co" tvg-name="Adult Swim" group-title="TV PREMIUM",Adult Swim
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0ez&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="AMC.lat" tvg-name="AMC" group-title="TV PREMIUM",AMC
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0c4&token=tecnotokenplustv230516F&f=.m3u8
@@ -318,15 +318,15 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a022&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a018&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Sextreme.us" tvg-name="Sextreme" group-title="TV PREMIUM",Sextreme
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fy&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="SonyChannel.lat" tvg-name="Sony" group-title="TV PREMIUM",Sony
+#EXTINF:-1 tvg-id="Canal.Sony.(México).mx" tvg-name="Sony" group-title="TV PREMIUM",Sony
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fh&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="SonyChannel.lat" tvg-name="Sony HD" group-title="TV PREMIUM",Sony HD
+#EXTINF:-1 tvg-id="Canal.Sony.(México).mx" tvg-name="Sony HD" group-title="TV PREMIUM",Sony HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hy&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="SonyMovies.lat" tvg-name="Sony Movies" group-title="TV PREMIUM",Sony Movies
+#EXTINF:-1 tvg-id="Sony.Movie.Channel.HD.us2" tvg-name="Sony Movies" group-title="TV PREMIUM",Sony Movies
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0el&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Space.lat" tvg-name="Space" group-title="TV PREMIUM",Space
+#EXTINF:-1 tvg-id="Canal.Space.(México).mx" tvg-name="Space" group-title="TV PREMIUM",Space
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fi&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Space.lat" tvg-name="Space HD" group-title="TV PREMIUM",Space HD
+#EXTINF:-1 tvg-id="Canal.Space.(México).mx" tvg-name="Space HD" group-title="TV PREMIUM",Space HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0i2&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="StarChannel.lat" tvg-name="Star Channel" group-title="TV PREMIUM",Star Channel
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a012&token=tecnotokenplustv230516F&f=.m3u8
@@ -418,7 +418,7 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0d6&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0cy&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="WarnerChannel.lat" tvg-name="Warner Channel" group-title="TV PREMIUM",Warner Channel
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0fl&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="WarnerChannel.lat" tvg-name="Warner TV HD" group-title="TV PREMIUM",Warner TV HD
+#EXTINF:-1 tvg-id="Canal.Warner.TV.(México).mx" tvg-name="Warner TV HD" group-title="TV PREMIUM",Warner TV HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hz&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="WinSportsPlus.co" tvg-name="Win Sports+ HD" group-title="TV PREMIUM",Win Sports+ HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0gh&token=tecnotokenplustv230516F&f=.m3u8
