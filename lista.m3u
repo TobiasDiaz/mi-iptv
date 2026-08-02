@@ -184,7 +184,7 @@ http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0hd&token=tecnotokenplustv230516
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a024&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="FX.lat" tvg-name="FX" group-title="TV PREMIUM",FX
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a01g&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="FX.lat" tvg-name="FX HD" group-title="TV PREMIUM",FX HD
+#EXTINF:-1 tvg-id="FX.HD.(FX.HD).pe" tvg-name="FX HD" group-title="TV PREMIUM",FX HD
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0i5&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Gamavision.ec" tvg-name="Gamavision" group-title="TV PREMIUM",GamavisiÃ°n
 http://tecnotv.club/cm7j/phpcode/lista01.php?c=a0ea&token=tecnotokenplustv230516F&f=.m3u8
