@@ -304,8 +304,6 @@ http://tecnotv.club/1f43/phpcode/lista01.php?c=a013&token=tecnotokenplustv230516
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0ia&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Pasiones.lat" tvg-name="Pasiones HD" group-title="TV PREMIUM",Pasiones HD
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0h1&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="PlayboyTV.lat" tvg-name="Playboy HD" group-title="TV PREMIUM",Playboy HD
-http://tecnotv.club/1f43/phpcode/lista01.php?c=a0g2&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="PlimPlim.ar" tvg-name="Plim Plim" group-title="TV PREMIUM",Plim Plim
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a027&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="POPU TV" group-title="TV PREMIUM",POPU TV
@@ -332,8 +330,6 @@ http://tecnotv.club/1f43/phpcode/lista01.php?c=a0d8&token=tecnotokenplustv230516
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a022&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="SenalColombia.co" tvg-name="Senal Colombia" group-title="TV PREMIUM",Senal Colombia
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a018&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Sextreme.us" tvg-name="Sextreme" group-title="TV PREMIUM",Sextreme
-http://tecnotv.club/1f43/phpcode/lista01.php?c=a0fy&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Sony.(México).mx" tvg-name="Sony" group-title="TV PREMIUM",Sony
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0fh&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Sony.(México).mx" tvg-name="Sony HD" group-title="TV PREMIUM",Sony HD
@@ -446,8 +442,6 @@ http://tecnotv.club/1f43/phpcode/lista3.php?c=3&token=tecnotokenplustv230516F&f=
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0rw&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="USANetwork.us" tvg-name="USA" group-title="TV PREMIUM",USA
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0cz&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Venus.us" tvg-name="Venus" group-title="TV PREMIUM",Venus
-http://tecnotv.club/1f43/phpcode/lista01.php?c=a0d6&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="ViaXEsports.cl" tvg-name="Via X Esports" group-title="TV PREMIUM",Via X Esports
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0cy&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="WarnerChannel.lat" tvg-name="Warner Channel" group-title="TV PREMIUM",Warner Channel
