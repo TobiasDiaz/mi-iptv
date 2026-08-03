@@ -370,7 +370,7 @@ http://tecnotv.club/1f43/phpcode/lista01.php?c=a003&token=tecnotokenplustv230516
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a02o&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Telemicro.do" tvg-name="Telemicro" group-title="TV PREMIUM",Telemicro
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a02q&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Telemundo.(México).sv" tvg-name="Telemundo" group-title="TV PREMIUM",Telemundo
+#EXTINF:-1 tvg-id="Canal.Telemundo.(Panregional).sv" tvg-name="Telemundo Internacional" group-title="TV PREMIUM",Telemundo Internacional
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a017&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Telemundo.(México).sv" tvg-name="Telemundo HD" group-title="TV PREMIUM",Telemundo HD
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0qy&token=tecnotokenplustv230516F&f=.m3u8
@@ -434,11 +434,11 @@ http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0rk&token=tecnotokenplustv230516F
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0rj&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Universal.Premiere.mx" tvg-name="Universal Premier" group-title="TV PREMIUM",Universal Premier
 http://tecnotv.club/1f43/phpcode/lista3.php?c=31&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Universal.Premiere.mx" tvg-name="Universal Premier" group-title="TV PREMIUM",Universal PremierE HD
+#EXTINF:-1 tvg-id="Canal.Universal.Premiere.mx" tvg-name="Universal Premier" group-title="TV PREMIUM",Universal Premier HD
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0rg&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Univisión.(Latinoamérica).sv" tvg-name="Univision" group-title="TV PREMIUM",Univision
 http://tecnotv.club/1f43/phpcode/lista3.php?c=3&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Univisión.(Latinoamérica).sv" tvg-name="Univision HD" group-title="TV PREMIUM",,Univision HD
+#EXTINF:-1 tvg-id="Canal.Univisión.(Latinoamérica).sv" tvg-name="Univision HD" group-title="TV PREMIUM",Univision HD
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a0rw&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="USANetwork.us" tvg-name="USA" group-title="TV PREMIUM",USA
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0cz&token=tecnotokenplustv230516F&f=.m3u8
