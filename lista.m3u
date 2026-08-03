@@ -202,10 +202,10 @@ http://tecnotv.club/1f43/phpcode/lista01.php?c=a0ea&token=tecnotokenplustv230516
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0fr&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Golden.(México).mx" tvg-name="Golden" group-title="TV PREMIUM",Golden
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a001&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Golden.Edge.mx" tvg-name="Golden Edge" group-title="TV PREMIUM",Golden Edge
-http://tecnotv.club/1f43/phpcode/lista01.php?c=a002&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Golden.(México).mx" tvg-name="Golden HD" group-title="TV PREMIUM",Golden HD
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0cm&token=tecnotokenplustv230516F&f=.m3u8
+#EXTINF:-1 tvg-id="Canal.Golden.Edge.mx" tvg-name="Golden Edge" group-title="TV PREMIUM",Golden Edge
+http://tecnotv.club/1f43/phpcode/lista01.php?c=a002&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Golf.Channel.(Latinoamérica).mx" tvg-name="Golf Channel" group-title="TV PREMIUM",Golf Channel
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0cx&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Guatevision.gt" tvg-name="Guatevision" group-title="TV PREMIUM",Guatevision
