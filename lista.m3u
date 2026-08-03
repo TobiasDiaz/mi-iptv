@@ -214,7 +214,7 @@ http://tecnotv.club/1f43/phpcode/lista01.php?c=a02p&token=tecnotokenplustv230516
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0gx&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.HBO.(México).mx" tvg-name="HBO HD" group-title="TV PREMIUM",HBO HD
 http://tecnotv.club/1f43/phpcode/lista01.php?c=a0gn&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.HBO.2.Latinoamérica.mx" tvg-name="HBO 2" group-title="TV PREMIUM",HBO 2
+#EXTINF:-1 tvg-name="HBO 2 Movistar" group-title="TV PREMIUM",HBO 2 Movistar
 http://tecnotv.club/1f43/phpcode/lista4.php?c=a00v&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.HBO.2.Latinoamérica.mx" tvg-name="HBO 2 HD" group-title="TV PREMIUM",HBO2 HD
 http://tecnotv.club/1f43/phpcode/ssiptv.php?c=a00m&token=tecnotokenplustv230516F&f=.m3u8
