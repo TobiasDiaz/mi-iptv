@@ -44,6 +44,8 @@ http://tecnotv.club/neef/phpcode/lista01.php?c=a0hn&token=tecnotokenplustv230516
 http://tecnotv.club/neef/phpcode/lista01.php?c=a00f&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal1.co" tvg-name="Canal 1" group-title="TV PREMIUM",Canal 1
 http://tecnotv.club/neef/phpcode/lista01.php?c=a020&token=tecnotokenplustv230516F&f=.m3u8
+#EXTINF:-1,Canal 4 - ESA
+http://tecnotv.club/neef/phpcode/ssiptv.php?c=a02n&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal6.mx" tvg-name="Canal 6 MX" group-title="TV PREMIUM",Canal 6 MX
 http://tecnotv.club/neef/phpcode/lista01.php?c=a01j&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal13.cl" tvg-name="Canal 13" group-title="TV PREMIUM",Canal 13
