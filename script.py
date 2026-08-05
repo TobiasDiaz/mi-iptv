@@ -28,7 +28,7 @@ try:
         
         selector_input = 'input[data-iptv="android1.m3u"]'
         
-        print("Esperando a que el campo cargue el código real (Timeout ampliado a 45s)...")
+        print("Esperando a que el campo cargue el código real (Timeout ampliado a 60s)...")
         
         try:
             # Ampliado a 60.000 ms (60 segundos)
