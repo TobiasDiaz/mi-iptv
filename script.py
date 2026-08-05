@@ -31,13 +31,13 @@ try:
         print("Esperando a que el campo cargue el código real (Timeout ampliado a 45s)...")
         
         try:
-            # Ampliado a 45.000 ms (45 segundos)
+            # Ampliado a 60.000 ms (60 segundos)
             page.wait_for_function(
                 f'''() => {{
                     const el = document.querySelector('{selector_input}');
                     return el && el.value && el.value !== "Cargando..." && el.value.includes("tecnotv.club");
                 }}''',
-                timeout=45000
+                timeout=60000
             )
         except Exception as err_wait:
             print(f"Aviso: La espera directa dio tiempo agotado, intentando lectura alternativa... ({err_wait})")
