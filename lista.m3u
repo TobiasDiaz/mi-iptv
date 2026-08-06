@@ -330,9 +330,9 @@ http://tecnotv.club/neef/phpcode/lista01.php?c=a0hy&token=tecnotokenplustv230516
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0el&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Sony.Movie.Channel.HD.us2" tvg-name="Sony Movies HD" group-title="TV PREMIUM",Sony Movies HD
 http://tecnotv.club/neef/phpcode/ssiptv.php?c=a005&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Space.(México).mx" tvg-name="Space" group-title="TV PREMIUM",Space
+#EXTINF:-1 tvg-id="Canal.Space.(Chile).sv" tvg-name="Space" group-title="TV PREMIUM",Space
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0fi&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Space.co" tvg-name="Space HD" group-title="TV PREMIUM",Space HD
+#EXTINF:-1 tvg-id="Canal.Space.(Chile).sv" tvg-name="Space HD" group-title="TV PREMIUM",Space HD
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0i2&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Star.Channel.(Centro).sv" tvg-name="Star Channel" group-title="TV PREMIUM",Star Channel
 http://tecnotv.club/neef/phpcode/lista01.php?c=a012&token=tecnotokenplustv230516F&f=.m3u8
