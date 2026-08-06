@@ -60,7 +60,7 @@ http://tecnotv.club/2utm/phpcode/ssiptv.php?c=a02g&token=tecnotokenplustv230516F
 http://tecnotv.club/2utm/phpcode/ssiptv.php?c=a00i&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Caracol.Internacional.mx" tvg-name="Caracol HD" group-title="TV PREMIUM",Caracol HD
 http://tecnotv.club/2utm/phpcode/lista01.php?c=a00x&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Cartoon.Network.(Pacífico).sv" tvg-name="Cartoon Network HD" group-title="TV PREMIUM",Cartoon Network HD
+#EXTINF:-1 tvg-id="Canal.Cartoon.Network.(Atlántico.Sur).sv" tvg-name="Cartoon Network HD" group-title="TV PREMIUM",Cartoon Network HD
 http://tecnotv.club/2utm/phpcode/lista01.php?c=a0ef&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Cartoonito.(México).mx" tvg-name="Cartoonito" group-title="TV PREMIUM",Cartoonito
 http://tecnotv.club/2utm/phpcode/lista01.php?c=a0cn&token=tecnotokenplustv230516F&f=.m3u8
