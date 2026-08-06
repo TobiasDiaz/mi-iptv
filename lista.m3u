@@ -324,7 +324,7 @@ http://tecnotv.club/neef/phpcode/lista01.php?c=a022&token=tecnotokenplustv230516
 http://tecnotv.club/neef/phpcode/lista01.php?c=a018&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Canal.Sony.(México).mx" tvg-name="Sony" group-title="TV PREMIUM",Sony
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0fh&token=tecnotokenplustv230516F&f=.m3u8
-#EXTINF:-1 tvg-id="Canal.Sony.Centro.sv" tvg-name="Sony HD" group-title="TV PREMIUM",Sony HD
+#EXTINF:-1 tvg-id="Canal.Sony.(México).sv" tvg-name="Sony HD" group-title="TV PREMIUM",Sony HD
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0hy&token=tecnotokenplustv230516F&f=.m3u8
 #EXTINF:-1 tvg-id="Sony.Movie.Channel.HD.us2" tvg-name="Sony Movies" group-title="TV PREMIUM",Sony Movies
 http://tecnotv.club/neef/phpcode/lista01.php?c=a0el&token=tecnotokenplustv230516F&f=.m3u8
